@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>I'M A SLAVE 4 U</title>
+  <script src="/x-gif/platform.js"></script>
+  <link rel="import" href="/x-gif/x-gif.html">
+  <script src="/synched_playback.js"></script>
+  <script>
+    var windows = [];
+    window.addEventListener('polymer-ready', function () {
+      var xGif = document.querySelector('x-gif');
+      xGif.src = window.opener.currentGif().url;
+      xGif['ping-pong'] = window.opener.currentGif().pingPong ? true : null;
+      window.addEventListener('message', function (e) {
+        var split = e.data.split('|');
+        if (split[0] === 'src') {
+          xGif.src = split[1];
+        }
+      });
+      setupAudioSynching(xGif);
+    })
+  </script>
+  <style>
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    -webkit-transform: translate3d(0,0,0);
+  }
+  </style>
+</head>
+<body>
+  <x-gif sync fill></x-gif>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "gif-tastic",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "socket.io": "^0.9.16",
+    "express": "^3.5.1",
+    "gm": "^1.14.2",
+    "request": "^2.34.0",
+    "q": "^1.0.1",
+    "btoa": "^1.1.1",
+    "midi": "^0.8.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

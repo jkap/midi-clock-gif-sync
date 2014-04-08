@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SOCKET</title>
+  <link rel="stylesheet" href="/style/bootstrap.min.css">
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/angular.js"></script>
+  <script src="/master.js"></script>
+  <meta name="viewport" content="minimal-ui">
+  <style>
+  .h-195 {
+    height: 195px;
+  }
+  </style>
+</head>
+<body ng-app="Giftastic">
+<div class="container" ng-controller="GridController">
+  <h1>GIFTASTIC&#8482;</h1>
+  <div class="row">
+    <form class="form-inline">
+      <button class="btn btn-default" type="button" ng-click="openWindow()">open window</button>
+      <button class="btn btn-default" type="button" ng-click="nextGif()">next gif</button>
+      <button class="btn btn-default" type="button" ng-click="reflowWindows()">reflow</button>
+      <input class="form-control" type="text" ng-model="gifInput" placeholder="new url">
+      <button class="btn btn-default" type="button" ng-click="addGif()">Add Gif</button>
+    </form>
+  </div>
+  <hr>
+  <div class="row" ng-repeat="row in gifRows">
+    <div class="col-md-3" ng-repeat="gif in row">
+      <div class="thumbnail">
+        <a href="#" ng-click="setActiveGif(gif, $index)" ng-class="{'active': gif === currentGif}">
+          <img ng-src="{{gif.url|poster}}">
+        </a>
+        <div class="caption">
+          <button ng-click="removeGif(gif)" type="button" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-trash"></i></button>
+          <input type="checkbox" ng-model="gif.pingPong">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
