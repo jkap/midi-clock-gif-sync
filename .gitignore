@@ -3,3 +3,4 @@ posters
 node_modules
 *.log
 .ds_store
+*.gif
