@@ -32,6 +32,15 @@ process.on('SIGINT', exitHandler.bind(null));
 
 server.listen(3000);
 
+io.sockets.on('connection', function (socket) {
+  socket.on('changeGif', function (data) {
+    io.sockets.emit('changeGif', data);
+  });
+  socket.on('pingPong', function (data) {
+    io.sockets.emit('pingPong', data);
+  });
+});
+
 app.use(express.logger('short'));
 app.use(express.bodyParser());
 app.use(express.static(__dirname + '/public'));
@@ -47,12 +56,12 @@ app.get('/api/gifs', function (req, res) {
 });
 
 app.put('/api/gifs', function (req, res) {
-  console.log(req.body);
   fs.writeFile('gifs.txt', JSON.stringify(req.body.gifs), 'utf-8', function (err, content) {
       if (err) {
         res.send(500, err);
         return;
       }
+      io.sockets.emit('listUpdate', req.body);
       res.json(req.body);
   });
 });

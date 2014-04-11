@@ -7,7 +7,13 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="/angular.js"></script>
   <script src="/master.js"></script>
-  <meta name="viewport" content="minimal-ui">
+  <script src="/fastclick.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+  </script>
+  <meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, user-scalable=no">
   <style>
   .h-195 {
     height: 195px;
@@ -30,7 +36,7 @@
   <div class="row" ng-repeat="row in gifRows">
     <div class="col-md-3" ng-repeat="gif in row">
       <div class="thumbnail">
-        <a href="#" ng-click="setActiveGif(gif, $index)" ng-class="{'active': gif === currentGif}">
+        <a href="#" ng-click="setActiveGif(gif, $index, false)" ng-class="{'active': gif === currentGif}">
           <img ng-src="{{gif.url|poster}}">
         </a>
         <div class="caption">

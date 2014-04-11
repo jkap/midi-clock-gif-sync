@@ -59,22 +59,26 @@
       return output;
     }
 
+    function cleanGif(gif) {
+      return {
+        url: $sce.getTrustedResourceUrl(gif.url),
+        pingPong: gif.pingPong
+      };
+    }
+
+    function trustGif(gif) {
+      return {
+        url: $sce.trustAsResourceUrl(gif.url),
+        pingPong: gif.pingPong
+      };
+    }
+
     function cleanArray(array) {
-      return array.map(function (value) {
-        return {
-          url: $sce.getTrustedResourceUrl(value.url),
-          pingPong: value.pingPong
-        };
-      });
+      return array.map(cleanGif);
     }
 
     function trustArray(array) {
-      return array.map(function (value) {
-        return {
-          url: $sce.trustAsResourceUrl(value.url),
-          pingPong: value.pingPong
-        };
-      });
+      return array.map(trustGif);
     }
 
     $scope.nextGif = function () {
@@ -89,9 +93,12 @@
       windows.push(newWindow);
     };
 
-    $scope.setActiveGif = function (gif, index) {
+    $scope.setActiveGif = function (gif, index, skipSocket) {
       $scope.currentGif = gif;
       gifNr = index;
+      if (!skipSocket) {
+        socket.emit('changeGif', cleanGif($scope.currentGif));
+      }
       windows.forEach(changeGif);
     };
 
@@ -140,21 +147,44 @@
       $scope.currentGif = $scope.gifs[gifNr];
     });
 
-    $scope.$watch("currentGif.pingPong", function (value) {
+    function sendPingPong(value, skipSocket) {
+      var pingPongMessage;
+
+      pingPongMessage = 'pingPong';
+      if (value) {
+        pingPongMessage += '|true';
+      }
+      if (!skipSocket) {
+        socket.emit('pingPong', !!value);
+      }
       windows.forEach(function (newWindow) {
-        var pingPongMessage = 'pingPong';
-        if (value) {
-          pingPongMessage += '|true';
-        }
         newWindow.postMessage(pingPongMessage, '*');
       });
       $http.put('/api/gifs', {gifs: cleanArray($scope.gifs)});
+    }
+
+    $scope.$watch("currentGif.pingPong", function (value) {
+      var pingPongMessage;
+      if ($scope.currentGif) {
+        sendPingPong(value);
+      }
     });
 
 
     socket = io.connect('http://' + $window.location.host);
 
     socket.on('beat', beatParser);
+    socket.on('changeGif', function (data) {
+      $scope.setActiveGif(trustGif(data), null, true);
+    });
+    socket.on('pingPong', function (data) {
+      sendPingPong(data, true);
+    });
+    socket.on('listUpdate', function (data) {
+      $scope.$apply(function () {
+        $scope.gifs = trustArray(data.gifs);
+      });
+    });
   });
 
   angular.module("Giftastic").filter("poster", function () {
