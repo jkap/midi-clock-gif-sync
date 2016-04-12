@@ -4,7 +4,7 @@
 
 ### not today tho
 
-#### copyright 2014 Josh Kaplan
+#### copyright 2014 Jenn Kaplan
 
 ##### MIT license
 
